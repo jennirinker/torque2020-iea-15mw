@@ -1,5 +1,7 @@
 # custom things to ignore
 *.tab
+*.h5
+*.zip
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
