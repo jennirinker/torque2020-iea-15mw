@@ -25,3 +25,5 @@ def read_eigenfreq(path, nread=13):
         
     else:
         raise ValueError('Filename must end with openfast.txt or hawc2.txt!')
+
+
