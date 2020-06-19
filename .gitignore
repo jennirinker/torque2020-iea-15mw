@@ -1,6 +1,5 @@
 # custom things to ignore
 *.tab
-*.h5
 *.zip
 *.out
 
