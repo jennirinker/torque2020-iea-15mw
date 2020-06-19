@@ -2,6 +2,7 @@
 *.tab
 *.zip
 *.out
+results/junk/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
