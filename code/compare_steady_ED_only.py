@@ -57,6 +57,8 @@ for i, (fastname, h2name) in enumerate(model_keys):
 
         h2_data *= h2scl
         nofpm_data *= h2scl
+        if 'TipDxb1' in fast_key:
+            h2_data += 4
 
         ax.plot(h2_wsp, h2_data, label='H2')
         ax.plot(fast_wsp, fast_data, label='OF')
