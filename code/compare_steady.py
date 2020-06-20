@@ -56,6 +56,7 @@ for i, (fastname, h2name) in enumerate(model_keys):
 
         if i == 1:
             ax.plot(nofpm_wsp, nofpm_data, label='H2 nofpm')
+    
 
     
 axs[1, 1].legend()

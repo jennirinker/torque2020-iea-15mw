@@ -8,7 +8,6 @@ from _utils import read_eigenfreq
 
 eig_dir = res_dir + 'eigenanalysis/'
 tab_path = eig_dir + 'eigendata.tab'
-model_keys = [model_keys[0]]  # don't have elastodyn yet
 nread = 8  # number of frequencies to look at
 
 data = np.empty((nread, len(model_keys)*3))
@@ -25,4 +24,6 @@ with open(tab_path, 'w') as f:
                                  for tup in model_keys)
             + ' \\\\\n')
     for i in range(nread):
-        f.write(f' {i+1} & ' + ' & '.join(f'{x:.3f}' for x in data[i]) + ' \\\\\n')
+        line = (' & %.3f & %.3f & (%.1f) & & & %.3f & %.3f & (%.1f) '
+                % tuple(data[i])).replace(')', '\\%)') + ' \\\\\n'
+        f.write(line)

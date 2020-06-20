@@ -17,9 +17,11 @@ def run_hawc2s(path, cwd):
 
 def read_eigenfreq(path, nread=13):
     """Read an eigenfrequency result, return array"""
-    if path.endswith('openfast.txt'):
+    if path.endswith('openfast.txt') and '_BD_' in path:
         all_freqs =  np.loadtxt(path, skiprows=1)
         return np.mean(all_freqs.reshape(-1, 3), axis=1)[:nread]
+    elif path.endswith('openfast.txt') and '_ED_' in path:
+        return np.loadtxt(path, skiprows=1)[:nread]
     elif path.endswith('hawc2.txt'):
         return np.loadtxt(path, skiprows=1)[1:nread+1]
         
