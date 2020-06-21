@@ -19,5 +19,6 @@ i_tbfa, i_tbss = 16, 17
 i_uhub = 14
 i_tipe, i_tipf = 41, 42
 i_thr, i_trq = 12, 10
+i_ywbr = 19
 prebend = 4.0014  # prebend at tip of blade [m]
 blade_len = 117.148749
