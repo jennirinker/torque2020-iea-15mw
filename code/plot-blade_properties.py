@@ -19,7 +19,9 @@ ed_df = read_blade_dat(ed_path, blade_len=blade_len)
 nofpm_df = read_blade_dat(h2nofpm_path, blade_len=blade_len)
 fpm_df = read_blade_dat(h2fpm_path, blade_len=blade_len)
 
-fig, axs = plt.subplots(2, 2, num=1, clear=True, figsize=(9, 4.5))
+pltprms = {'font.size': 11, 'axes.labelsize': 13}
+with plt.rc_context(pltprms):
+    fig, axs = plt.subplots(2, 2, num=1, clear=True, figsize=(9, 4))
 
 alpha = 0.8
 
