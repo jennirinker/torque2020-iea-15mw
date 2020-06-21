@@ -3,6 +3,7 @@
 *.zip
 *.out
 results/junk/*
+*.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
