@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Plot steady-state comparison
+"""Plot steady-state comparison for paper
 """
 import os
 import warnings
