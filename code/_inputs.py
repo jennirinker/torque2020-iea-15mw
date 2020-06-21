@@ -8,6 +8,7 @@ End all directory paths with slash!
 hawc2s_path = 'C:/Users/rink/Documents/hawc2/hawcstab2_v2.16a_x64/HAWC2S_x64.exe'
 hawc_dir = 'C:/Users/rink/git/IEA-15-240-RWT/HAWC2/'
 res_dir = '../results/'
+fig_dir = '../figures/'
 model_keys = [('ED', 'NoFPM_notorsion'), ('BD', 'FPM')]
 steady_dir = res_dir + 'steady_v1/'
 step_dir = res_dir + 'step_v1/'
@@ -17,5 +18,6 @@ i_flp, i_edg = 28, 29
 i_tbfa, i_tbss = 16, 17
 i_uhub = 14
 i_tipe, i_tipf = 41, 42
-i_thr = 12
+i_thr, i_trq = 12, 10
 prebend = 4.0014  # prebend at tip of blade [m]
+blade_len = 117.148749

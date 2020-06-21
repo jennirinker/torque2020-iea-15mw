@@ -22,13 +22,13 @@ if ed_only:
 # can plot up to 8 channels
 fig, axs = plt.subplots(ny, 4, figsize=(12, fig_ht), clear=True, num=4)
 
-# fast_path = dlc11_dir + 'IEA15MW_torque_DLC11_ED_stats.yaml'
-# h2_path = dlc11_dir + 'NoFPM_notorsion_DLC11_statistics.h5'
-# i, fastname = 0, 'ED'
+fast_path = dlc11_dir + 'IEA15MW_torque_DLC11_ED_stats.yaml'
+h2_path = dlc11_dir + 'NoFPM_notorsion_DLC11_statistics.h5'
+i, fastname = 0, 'ED'
 
-fast_path = dlc11_dir + 'IEA15MW_torque_DLC11_BD_stats.yaml'
-h2_path = dlc11_dir + 'FPM_DLC11_statistics.h5'
-i, fastname = 0, 'BD'
+# fast_path = dlc11_dir + 'IEA15MW_torque_DLC11_BD_stats.yaml'
+# h2_path = dlc11_dir + 'FPM_DLC11_statistics.h5'
+# i, fastname = 0, 'BD'
 
 fast_df = read_dlc11(fast_path)
 h2_df = read_dlc11(h2_path)
@@ -36,7 +36,7 @@ h2_df = read_dlc11(h2_path)
 fast_wsps = fast_df.loc['mean', 'Wind1VelX']
 h2_wsps = h2_df.loc[h2_df.channel_nr == i_uhub, 'mean'].values
 
-stat = 'std'
+stat = 'mean'
 
 for j, (fast_key, h2_chan, h2scl) in enumerate(plot_keys):
     # identify axis
@@ -59,6 +59,8 @@ for j, (fast_key, h2_chan, h2scl) in enumerate(plot_keys):
     h2_data *= h2scl
     if 'Tip' in fast_key and stat == 'mean':
         h2_data += prebend
+    elif 'TwrBsMyt' in fast_key:
+        h2_data *= (150-15)/150
     # plot data
     ax.scatter(fast_wsps, fast_data, label='OF', s=6, alpha=0.4)
     ax.scatter(h2_wsps, h2_data, label='H2', s=6, alpha=0.4)

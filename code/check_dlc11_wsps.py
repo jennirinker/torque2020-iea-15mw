@@ -49,10 +49,10 @@ fast_bd_dict = ReadFASToutFormat(fast_bd, OutFileFmt=2)[0]
 fast_ed_dict = ReadFASToutFormat(fast_ed, OutFileFmt=2)[0]
 
 plt.figure(11, clear=True, figsize=(12, 4))
-plt.plot(h2df_fpm[i_uhub], label='FPM')
-plt.plot(h2df_nt[i_uhub], label='NoFPM_notors')
 plt.plot(fast_bd_dict['Time'], fast_bd_dict['Wind1VelX'], label='BD')
 plt.plot(fast_ed_dict['Time'], fast_ed_dict['Wind1VelX'], label='ED')
+plt.plot(h2df_fpm[i_uhub], label='FPM')
+plt.plot(h2df_nt[i_uhub], label='NoFPM_notors')
 plt.legend()
 plt.tight_layout()
 

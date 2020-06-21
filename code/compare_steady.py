@@ -3,14 +3,15 @@
 """
 import matplotlib.pyplot as plt
 from _inputs import (steady_dir, model_keys, i_gspd, i_pit, i_uhub, i_pow, i_flp,
-                     i_tbfa, i_gtrq, i_edg, i_tipf, prebend)
+                     i_tbfa, i_gtrq, i_edg, i_tipf, prebend, i_thr, i_trq)
 from _utils import read_steady
 
 
 ed_only = False  # ElastoDyn-only results
-plot_keys = [('BldPitch1', i_pit, 1), ('GenSpeed', i_gspd, 1), ('GenPwr', i_pow, 1e-3) ,
+plot_keys = [('BldPitch1', i_pit, 1), ('GenSpeed', i_gspd, 1), ('RtAeroFxh', i_thr, 1e3),
              ('GenTq', i_gtrq, -1e-3), ('RootMyb1', i_flp, -1), ('RootMxb1', i_edg, 1),
              ('TwrBsMyt', i_tbfa, 1), ('TipDxb1', i_tipf, 1)]  # fast, h2chan, h2scl
+# ('GenPwr', i_pow, 1e-3) , ('TipDxb1', i_tipf, 1) ('RtAeroMxh', i_trq, 1e3)
 
 # --------------------------------------------------------------------------------------
 
@@ -49,10 +50,10 @@ for i, (fastname, h2name) in enumerate(model_keys):
         if 'Tip' in fast_key:
             h2_data += prebend
         elif 'TwrBsMyt' in fast_key:
-            h2_data -= 0
+            h2_data *= (150-15)/150
         # plot data
-        ax.plot(h2_wsp, h2_data, label='H2')
         ax.plot(fast_wsp, fast_data, label='OF')
+        ax.plot(h2_wsp, h2_data, label='H2')
         ax.set_title(f'{fast_key},\n {h2name} vs. {fastname}')
     
 

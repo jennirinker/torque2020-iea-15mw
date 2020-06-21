@@ -18,6 +18,62 @@ def run_hawc2s(path, cwd):
                          + out.stderr.decode('UTF-8'))
 
 
+def read_blade_dat(path, n_ed=50, blade_len=117.148749):
+    """Read blade dat file"""
+
+    def read_beamdyn(path, blade_len=blade_len):
+        m_cols = [f'M_{i}{j}' for i in range(1,7) for j in range(i,7)]
+        k_cols = [f'K_{i}{j}' for i in range(1,7) for j in range(i,7)]
+        bd_cols = ['r'] + m_cols + k_cols
+        with open(path, 'r') as f:
+            for i, line in enumerate(f):
+                if i == 3:
+                    nstats = int(line.split()[0])  # number of stations
+                    bd_stat = []
+                if not (i - 10) % 15:
+                    bd_stat.append(float(line))
+        bd_df = pd.DataFrame(columns=bd_cols)
+        bd_df['r'] =  np.array(bd_stat) * blade_len
+        for i in range(nstats):
+            mi = np.loadtxt(path, skiprows=15*i+18, max_rows=6)
+            ki = np.loadtxt(path, skiprows=15*i+11, max_rows=6)
+            bd_df.loc[i, m_cols] = mi[np.triu_indices(6)]
+            bd_df.loc[i, k_cols] = ki[np.triu_indices(6)]
+        return bd_df.set_index('r')
+
+    def read_elastodyn(path, n_ed=n_ed, blade_len=blade_len):
+        ed_df = pd.read_csv(path, delim_whitespace=True, skiprows=list(range(14)) + [15],
+                            nrows=n_ed, header=0)
+        ed_df.iloc[:, 0] = ed_df.iloc[:, 0] * blade_len
+        return ed_df.set_index('BlFract')
+
+    def read_hawc2(path):
+        nofpm_cols = ['r', 'm', 'x_cg', 'y_cg', 'ri_x', 'ri_y', 'x_sh', 'y_sh', 'E', 'G', 'I_x',
+              'I_y', 'K', 'k_x', 'k_y', 'A', 'pitch', 'x_e', 'y_e']
+        fpm_cols = ['r', 'm', 'x_cg', 'y_cg', 'ri_x', 'ri_y', 'pitch', 'x_e', 'y_e', 'K_11',
+                    'K_12', 'K_13', 'K_14', 'K_15', 'K_16', 'K_22', 'K_23', 'K_24', 'K_25',
+                    'K_26', 'K_33', 'K_34', 'K_35', 'K_36', 'K_44', 'K_45', 'K_46', 'K_55',
+                    'K_56', 'K_66']
+        with open(path, 'r') as f:
+            for i, line in enumerate(f):
+                if line.startswith('$'):
+                    max_rows = int(line.split()[1])
+                    skiprows = i + 1
+                    break
+        h2_dat = np.loadtxt(path, skiprows=skiprows, max_rows=max_rows)
+        h2_df = pd.DataFrame(h2_dat, columns=[nofpm_cols, fpm_cols][h2_dat.shape[1] == 30])
+        return h2_df.set_index('r')
+
+    if 'BeamDyn_blade' in path:
+        return read_beamdyn(path, blade_len=blade_len)
+    elif 'ElastoDyn_blade' in path:
+        return read_elastodyn(path, n_ed=n_ed, blade_len=blade_len)
+    elif 'Blade_st' in path:
+        return read_hawc2(path)
+    else:
+        return ValueError('Unrecognized path ' + path + '!!!')
+
+
 def read_dlc11(path):
     """Read the DLC11 results"""
     if path.endswith('yaml'):
@@ -59,7 +115,7 @@ def read_steady(path):
 def read_step(path, usecols=None):
     """Read a stepwind result"""
     if usecols is not None:
-        usecols = ['Time'] + usecols
+        usecols = ['Time', 'Wind1VelX'] + usecols
     if path.endswith('.out'):  # openfast result
         df = pd.read_csv(path, skiprows=[0,1,2,3,4,5] + [7], index_col=0, header=0,
                          delim_whitespace=True, usecols=usecols)
