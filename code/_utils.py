@@ -8,6 +8,10 @@ from wetb.hawc2.Hawc2io import ReadHawc2
 import yaml
 from _inputs import hawc2s_path
 
+try:
+    from wisdem.aeroelasticse.Util.ReadFASTout import ReadFASToutFormat
+except:
+    print('To read OpenFAST binary files, run: conda install wisdem')
 
 def run_hawc2s(path, cwd):
     """Run HAWC2S on a file"""
@@ -119,6 +123,9 @@ def read_step(path, usecols=None):
     if path.endswith('.out'):  # openfast result
         df = pd.read_csv(path, skiprows=[0,1,2,3,4,5] + [7], index_col=0, header=0,
                          delim_whitespace=True, usecols=usecols)
+    elif path.endswith('.outb'):  # openfast result, binary
+        data, _ = ReadFASToutFormat(path)
+        df = pd.DataFrame.from_dict(data)
     elif path.endswith('.sel'):  # hawc2 result
         df = pd.DataFrame(ReadHawc2(path).ReadBinary()).set_index(0)
     else:

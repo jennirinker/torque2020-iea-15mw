@@ -11,13 +11,13 @@ from _inputs import (steady_dir, model_keys, i_gspd, i_pit, i_uhub, i_pow, i_flp
 from _utils import read_steady
 
 
-plot_keys = [('RotSpeed', i_gspd, 'GenSpeed [rpm]', 1),
-             ('BldPitch1', i_pit, 'Pitch [deg]', 1),
-             ('GenPwr', i_pow, 'Power [MW]', 1e-3),
+plot_keys = [('RotSpeed', i_gspd, 'Generator Speed [rpm]', 1),
+             ('BldPitch1', i_pit, 'Blade Pitch [deg]', 1),
+             ('GenPwr', i_pow, 'Generator Power [MW]', 1e-3),
              ('RootMyb1', i_flp, 'Flapwise [MNm]', 1e-3),
 #             ('RootMEdg1', 'edge', 'Edgewise [MNm]', 1e-3),
-             ('TwrBsMyt', i_tbfa, 'TwrBs FA [MNm]', 1e-3),
-             ('TipDxb1', i_tipf, 'TipDefl [m]', 1)]
+             ('TwrBsMyt', i_tbfa, 'Tower Base Fore-Aft Moment [MNm]', 1e-3),
+             ('TipDxb1', i_tipf, 'Flapwise Blade Tip Deflection [m]', 1)]
 alpha = 0.8
 
 # make figure

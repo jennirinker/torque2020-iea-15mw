@@ -7,9 +7,9 @@ import os
 from _inputs import (step_dir, model_keys, i_gspd, i_pit, i_gtrq, fig_dir)
 from _utils import read_step
 
-plot_keys = [('GenSpeed', i_gspd,'GenSpeed [rpm]', 1),
-             ('BldPitch1', i_pit, 'Pitch [deg]', 1),
-             ('GenTq', i_gtrq, 'GenTorque [MNm]', -1e-6)]
+plot_keys = [('GenSpeed', i_gspd,'Generator Speed [rpm]', 1),
+             ('BldPitch1', i_pit, 'Blade Pitch [deg]', 1),
+             ('GenTq', i_gtrq, 'Generator Torque [MNm]', -1e-6)]
 # ('GenPwr', i_pow, 1e-3)
 alpha = 0.9
 
@@ -20,7 +20,7 @@ step_data = []
 steady_data =[]
 for i, (fastname, h2name) in enumerate(model_keys):
     # path names
-    fast_path = step_dir + f'IEA15MW_step_torque_{fastname}_0.out'
+    fast_path = step_dir + f'IEA15MW_step_torque_{fastname}_0.outb'
     h2_path = step_dir + (f'iea_15mw_{h2name}_rwt_step.sel').lower()
     # load data
     fast_df = read_step(fast_path, usecols=[t[0] for t in plot_keys])
@@ -43,6 +43,7 @@ for i, (fastname, h2name) in enumerate(model_keys):
         ax = axs[i, j]
         ax.grid('on')
         # isolate and scale step data
+        print(fast_key)
         fast_data = fast_df[fast_key]
         h2_data = h2_df[h2_chan] * h2scl
         if 'GenTq' in fast_key:
@@ -51,7 +52,7 @@ for i, (fastname, h2name) in enumerate(model_keys):
         c1, c2 = None, None
         if i > 0:
             c1, c2 = l1.get_color(), l2.get_color()
-        l1, = ax.plot(fast_data, label=['ElastoDyn', 'BeamDyn'][i],
+        l1, = ax.plot(fast_df['Time'], fast_data, label=['ElastoDyn', 'BeamDyn'][i],
                       linestyle=['-', '--'][i], c=c1, alpha=alpha)
         l2, = ax.plot(h2_data, label=['H2-CNT', 'H2-FPM'][i],
                       linestyle=['-', '--'][i], c=c2, alpha=alpha)
