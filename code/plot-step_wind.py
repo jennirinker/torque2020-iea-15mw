@@ -51,7 +51,7 @@ for i, (fastname, h2name) in enumerate(model_keys):
         c1, c2 = None, None
         if i > 0:
             c1, c2 = l1.get_color(), l2.get_color()
-        l1, = ax.plot(fast_data, label=fast_labels[i],
+        l1, = ax.plot(fast_df['Time'], fast_data, label=['ElastoDyn', 'BeamDyn'][i],
                       linestyle=['-', '--'][i], c=c1, alpha=alpha)
         l2, = ax.plot(h2_data, label=h2_labels[i],
                       linestyle=['-', '--'][i], c=c2, alpha=alpha)
