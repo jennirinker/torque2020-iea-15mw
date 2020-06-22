@@ -4,7 +4,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from _inputs import (step_dir, steady_dir, model_keys, i_gspd, i_pit, i_pow, i_gtrq, i_uhub)
-from _utils import read_step
+from _utils import read_step, read_steady
 
 
 ed_only = False
