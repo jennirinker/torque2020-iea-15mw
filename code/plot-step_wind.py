@@ -4,7 +4,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-from _inputs import (step_dir, model_keys, i_gspd, i_pit, i_gtrq, fig_dir)
+from _inputs import (step_dir, model_keys, i_gspd, i_pit, i_gtrq, fig_dir, fast_labels, h2_labels)
 from _utils import read_step
 
 plot_keys = [('GenSpeed', i_gspd,'Generator Speed [rpm]', 1),
@@ -43,7 +43,6 @@ for i, (fastname, h2name) in enumerate(model_keys):
         ax = axs[i, j]
         ax.grid('on')
         # isolate and scale step data
-        print(fast_key)
         fast_data = fast_df[fast_key]
         h2_data = h2_df[h2_chan] * h2scl
         if 'GenTq' in fast_key:
@@ -52,9 +51,9 @@ for i, (fastname, h2name) in enumerate(model_keys):
         c1, c2 = None, None
         if i > 0:
             c1, c2 = l1.get_color(), l2.get_color()
-        l1, = ax.plot(fast_df['Time'], fast_data, label=['ElastoDyn', 'BeamDyn'][i],
+        l1, = ax.plot(fast_data, label=fast_labels[i],
                       linestyle=['-', '--'][i], c=c1, alpha=alpha)
-        l2, = ax.plot(h2_data, label=['H2-CNT', 'H2-FPM'][i],
+        l2, = ax.plot(h2_data, label=h2_labels[i],
                       linestyle=['-', '--'][i], c=c2, alpha=alpha)
         ax.set_xlim([200, h2_data.index[-1]])
         if i == 0:
