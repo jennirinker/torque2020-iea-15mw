@@ -59,8 +59,6 @@ for j, (fast_key, h2_chan, h2scl) in enumerate(plot_keys):
     h2_data *= h2scl
     if 'Tip' in fast_key and stat == 'mean':
         h2_data += prebend
-    elif 'TwrBsMyt' in fast_key:
-        h2_data *= (150-15)/150
     # plot data
     ax.scatter(fast_wsps, fast_data, label='OF', s=6, alpha=0.4)
     ax.scatter(h2_wsps, h2_data, label='H2', s=6, alpha=0.4)

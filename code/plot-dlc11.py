@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from _inputs import (dlc11_dir, model_keys, i_gspd, i_pit, i_uhub, i_pow, i_flp,
                      i_tbfa, i_gtrq, i_edg, i_tipf, prebend, i_thr, i_trq, fig_dir,
-                     i_ywbr)
+                     i_ywbr, fast_labels, h2_labels)
 from _utils import read_dlc11
 
 
@@ -18,11 +18,12 @@ plot_keys = [('BldPitch1', i_pit, 'Blade pitch [deg]', 1),
              ('RootMyb1', i_flp, 'Flapwise BRM [MNm]', 1e-3),
              ('RootMxb1', i_edg, 'Edgewise BRM [MNm]', 1e-3),
              ('TwrBsMyt', i_tbfa, 'Tower-base fore-aft [MNm]', 1e-3),
-             ('YawBrMyp', i_ywbr, 'Yaw-bearing pitch moment [MNm]', 1e-3),
+              # ('YawBrMyp', i_ywbr, 'Yaw-bearing pitch moment [MNm]', 1e-3),
              ('TipDxb1', i_tipf, 'Tip deflection [m]', 1)]  # fast, h2chan, h2scl
 alpha = 0.5
 darks = cm.get_cmap('tab20')(range(0, 20, 2))
 lights = cm.get_cmap('tab20')(range(1, 20, 2))
+bd_maxwsp = 21  # cutoff for BeamDyn frequencies
 
 # keys = [('GenSpeed', 9, 'Generator speed [rpm]', 30/np.pi, 1),
 #         ('BldPitch1', 3, 'Blade pitch [deg]', 1, 1),
@@ -72,36 +73,38 @@ for i, (fastname, h2name) in enumerate(model_keys):
         elif 'RtAeroFxh' in fast_key:
             h2scl = 1e-3
         # isolate data
-        fast_wsps = fast_df.loc['mean', 'Wind1VelX']
-        fast_means = fast_df.loc['mean', fast_key]
-        fast_stds = fast_df.loc['std', fast_key]
-        h2_wspss = h2_df.loc[h2_df.channel_nr == i_uhub, 'mean']
-        h2_means = h2_df.loc[h2_df.channel_nr == h2_chan, 'mean']
-        h2_stds = h2_df.loc[h2_df.channel_nr == h2_chan, 'std']
+        fast_wsps = np.array(fast_df.loc['mean', 'Wind1VelX'])
+        fast_means = np.array(fast_df.loc['mean', fast_key])
+        fast_stds = np.array(fast_df.loc['std', fast_key])
+        h2_wsps = h2_df.loc[h2_df.channel_nr == i_uhub, 'mean'].values
+        h2_means = h2_df.loc[h2_df.channel_nr == h2_chan, 'mean'].values
+        h2_stds = h2_df.loc[h2_df.channel_nr == h2_chan, 'std'].values
         # scale and offset
-        fast_means = np.array(fast_means) * fst_scl
-        fast_stds = np.array(fast_stds) * fst_scl
+        fast_means = fast_means * fst_scl
+        fast_stds = fast_stds * fst_scl
         h2_means = h2_means * h2scl
         h2_stds = h2_stds * h2scl
         if 'Tip' in fast_key:
             h2_means += prebend
-        elif 'TwrBsMyt' in fast_key:
-            h2_means = h2_means * (150-15)/150
-            h2_stds = h2_stds * (150-15)/150
-        # plot data
-        # ax.scatter(fast_wsps, fast_data, label='OF', s=6, alpha=0.4)
-        # ax.scatter(h2_wsps, h2_data, label='H2', s=6, alpha=0.4)
-        # ax.set_title(fast_key)
+        # if BD,ignore >20 m/s
+        if 'BD' in fastname:
+            fast_means = fast_means[fast_wsps < bd_maxwsp]
+            fast_stds = fast_stds[fast_wsps < bd_maxwsp]
+            fast_wsps = fast_wsps[fast_wsps < bd_maxwsp]
+            h2_means = h2_means[h2_wsps < bd_maxwsp]
+            h2_stds = h2_stds[h2_wsps < bd_maxwsp]
+            h2_wsps = h2_wsps[h2_wsps < bd_maxwsp]
         ax.errorbar(fast_wsps, fast_means, yerr=fast_stds, fmt='o', zorder=5, capsize=5, 
                     alpha=alpha, mec=darks[0], ecolor=darks[0], mfc=lights[0],
-                    label=['ElastoDyn', 'BeamDyn'][i])
-        ax.errorbar(h2_wspss, h2_means, yerr=h2_stds, fmt='o', zorder=5, capsize=5, 
+                    label=fast_labels[i])
+        ax.errorbar(h2_wsps, h2_means, yerr=h2_stds, fmt='o', zorder=5, capsize=5, 
                     alpha=alpha, mec=darks[1], ecolor=darks[1], mfc=lights[1],
-                    label=['H2-CNT', 'H2-FPM'][i])
+                    label=h2_labels[i])
         ax.set_title(label, fontsize=10)
-    axs[0, -1].legend(loc=4)
+    axs[-1, -1].set_visible(False)
     plt.tight_layout()
+    axs[-1, 1].legend(bbox_to_anchor=(1.23, 1), loc='upper left', borderaxespad=0)
     # save figure
-    figname = os.path.basename(__file__).replace('.py', f'_{i}.png')
-    fig.savefig(fig_dir + figname, dpi=150)
+    # figname = os.path.basename(__file__).replace('.py', f'_{i}.png')
+    # fig.savefig(fig_dir + figname, dpi=150)
 
