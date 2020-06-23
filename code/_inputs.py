@@ -34,3 +34,19 @@ i_tipe = 44
 i_tipf = 45
 i_gtrq = 95
 i_pow = 96
+# stuff for plotting
+plot_dict = {'BldPitch1': (i_pit, 'Blade pitch [deg]', 1),  # fast key, hawc2 channel, plot label, scale
+             'GenSpeed': (i_gspd, 'Generator speed [rpm]', 1),
+             'GenPwr': (i_pow, 'Power [MW]', 1e-3),
+             'GenTq': (i_gtrq, 'Generator torque [MNm]', 1e-3),
+             'RootMyb1': (i_flp, 'Flapwise root moment [MNm]', 1e-3),
+             'RootMxb1': (i_edg, 'Edgewise root moment [MNm]', 1e-3),
+             'TipDxb1': (i_tipf, 'Flapwise tip deflection [m]', 1),
+             'TipDyb1': (i_tipe, 'Edgewise tip deflection [m]', 1),
+             'RtAeroFxh': (i_thr, 'Thrust [MN]', 1e-6),
+             'TwrBsMyt': (i_tbfa, 'Tower-base fore-aft [MNm]', 1e-3),
+             'TwrBsMxt': (i_tbss, 'Tower-base side-side [MNm]', 1e-3),
+             'YawBrMyp': (i_ywbr, 'Yaw-bearing pitch moment [MNm]', 1e-3),
+             'RtAeroCp': (500, 'Cp [-]', 1),
+             'RtAeroCt': (600, 'Ct [-]', 1),
+    }

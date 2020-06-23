@@ -47,7 +47,7 @@ fast_bd =  dlc11_dir + 'IEA15MW_torque_DLC11_BD_20.outb'
 fast_ed = dlc11_dir + 'IEA15MW_torque_DLC11_ED_20.outb'
 fast_bd_dict = ReadFASToutFormat(fast_bd, OutFileFmt=2)[0]
 fast_ed_dict = ReadFASToutFormat(fast_ed, OutFileFmt=2)[0]
-
+#%%
 plt.figure(11, clear=True, figsize=(12, 4))
 plt.plot(fast_bd_dict['Time'], fast_bd_dict['Wind1VelX'], label='BD')
 plt.plot(fast_ed_dict['Time'], fast_ed_dict['Wind1VelX'], label='ED')
