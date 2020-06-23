@@ -15,16 +15,20 @@ from _utils import read_steady
 plot_keys = [('RotSpeed', i_gspd, 'Generator Speed [rpm]', 1),
              ('BldPitch1', i_pit, 'Blade Pitch [deg]', 1),
              ('GenPwr', i_pow, 'Generator Power [MW]', 1e-3),
-#             ('RootMEdg1', 'edge', 'Edgewise [MNm]', 1e-3),
-             ('RtAeroCp', 500, 'Cp [-]', 1),
-             ('RtAeroCt', 600, 'Ct [-]', 1),
-             ('YawBrMyp', i_ywbr, 'Yaw-Bearing Pitch Moment [MNm]', 1e-3),
+#             ('RootMEdg1', 'edge', 'Edgewise [MNm]', 1e-3),  # edgewise BRM
+              ('RtAeroCp', 500, 'Cp [-]', 1),
+              ('RtAeroCt', 600, 'Ct [-]', 1),
+              # ('RtAeroFxh', i_thr, 'Thrust [MNm]', 1e-3),
+             # ('YawBrMyp', i_ywbr, 'Yaw-Bearing Pitch Moment [MNm]', 1e-3),
              ('TwrBsMyt', i_tbfa, 'Tower Base Fore-Aft Moment [MNm]', 1e-3),
              ('RootMyb1', i_flp, 'Flapwise Root Moment [MNm]', 1e-3),
              ('TipDxb1', i_tipf, 'Flapwise Tip Deflection [m]', 1)]
 alpha = 0.8
-bd_maxwsp = 25#20.1  # cutoff for BeamDyn frequencies
+maxwsp = 25  # cutoff for BeamDyn frequencies
 A = np.pi * 120**2
+save_fig = True
+
+# --------------------------------------------------------------------------------------
 
 # make figure
 pltprms = {'font.size': 10, 'axes.labelsize': 10}
@@ -60,6 +64,8 @@ for i, (fastname, h2name) in enumerate(model_keys):
             power = h2_df.loc['mean', str(i_pow)].values
             wsp = h2_df.loc['mean'][str(i_uhub)].values
             h2_df.loc['mean', str(h2_chan)] = power / (0.5 * 1.225 * A * wsp**3)
+        elif fast_key == 'RtAeroFxh':
+            fst_scl *= 1e-3
         # isolate data
         fast_wsp = np.array(fast_df.loc['mean', 'Wind1VelX'])
         fast_data = np.array(fast_df.loc['mean', fast_key])
@@ -71,10 +77,10 @@ for i, (fastname, h2name) in enumerate(model_keys):
             h2_data += prebend
         # if BD,ignore >20 m/s
         if 'BD' in fastname:
-            fast_data = fast_data[fast_wsp < bd_maxwsp]
-            fast_wsp = fast_wsp[fast_wsp < bd_maxwsp]
-            h2_data = h2_data[h2_wsp < bd_maxwsp]
-            h2_wsp = h2_wsp[h2_wsp < bd_maxwsp]
+            fast_data = fast_data[fast_wsp < maxwsp]
+            fast_wsp = fast_wsp[fast_wsp < maxwsp]
+            h2_data = h2_data[h2_wsp < maxwsp]
+            h2_wsp = h2_wsp[h2_wsp < maxwsp]
         # plot data
         c1, c2 = None, None
         if i > 0:
@@ -84,21 +90,20 @@ for i, (fastname, h2name) in enumerate(model_keys):
         l2, = ax.plot(h2_wsp, h2_data, label=h2_labels[i],
                       linestyle=['-', '--'][i], c=c2, alpha=alpha)
         ax.grid('on')
-        # if fast_key == 'RtAeroCp':
-        #     cpline = ax.plot(fast_wsp, 0.489*np.ones(fast_wsp.size), ':', '0.4', lw=2,
-        #                       alpha=0.6, zorder=-2, label='Design Cp')
-        #     ax.set_ylim([0, 0.51])
         if i == 0:
             ax.set_title(label, fontsize=10)
         if j // 6:
             ax.set_xlabel('Wind speed [m/s]')
-        ax.set_xlim([3, bd_maxwsp])
+        ax.set_xlim([3, maxwsp])
 # prettify
 plt.tight_layout()
-fig.axes[2].legend(fontsize=10, loc=4)
-# axs[1, 0].legend([cpline[0]], ['Design Cp'], fontsize=10,
-#                  bbox_to_anchor=(0.97, 0.7), loc='upper right', borderaxespad=0.)
+axs[2, 2].set_visible(False)
+axs[2, 1].legend(fontsize=10,
+                 bbox_to_anchor=(1.26, 1.0), loc='upper left', borderaxespad=0.)
+cpline = axs[1,0].plot([3, 25],[0.489, 0.489], ':', c='0.6', lw=2, zorder=0)
+axs[1, 0].legend([cpline[0]], ['Design Cp'], fontsize=10, loc=3)
 
-# # save figure
-figname = os.path.basename(__file__).replace('.py', '.png')
-fig.savefig(fig_dir + figname, dpi=150)
+# save figure
+if save_fig:
+    figname = os.path.basename(__file__).replace('.py', '.png')
+    fig.savefig(fig_dir + figname, dpi=150)
