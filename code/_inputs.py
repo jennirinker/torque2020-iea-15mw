@@ -28,6 +28,7 @@ i_uhub = 14
 i_tbfa = 19
 i_tbss = 20
 i_ywbr = 22
+i_ywrl = 23
 i_flp = 31
 i_edg = 32
 i_tipe = 44
@@ -46,6 +47,7 @@ plot_dict = {'BldPitch1': (i_pit, 'Blade pitch [deg]', 1),  # fast key, hawc2 ch
              'RtAeroFxh': (i_thr, 'Thrust [MN]', 1e-6),
              'TwrBsMyt': (i_tbfa, 'Tower-base fore-aft [MNm]', 1e-3),
              'TwrBsMxt': (i_tbss, 'Tower-base side-side [MNm]', 1e-3),
+             'YawBrMxp': (i_ywrl, 'Yaw-bearing roll moment [MNm]', 1e-3),
              'YawBrMyp': (i_ywbr, 'Yaw-bearing pitch moment [MNm]', 1e-3),
              'RtAeroCp': (500, 'Cp [-]', 1),
              'RtAeroCt': (600, 'Ct [-]', 1),

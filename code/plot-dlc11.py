@@ -12,13 +12,13 @@ from _utils import read_dlc11
 
 plot_keys = ['BldPitch1', 'GenSpeed', 'GenPwr', 
              'RtAeroFxh', 'RootMyb1', 'TipDxb1',
-             'TwrBsMyt', 'TwrBsMxt',
+             'TwrBsMyt', 'TwrBsMxt', 'YawBrMyp', 
              ]  # fast_keys to plot
 alpha = 0.5
 darks = cm.get_cmap('tab20')(range(0, 20, 2))
 lights = cm.get_cmap('tab20')(range(1, 20, 2))
 bd_maxwsp = 21  # cutoff for BeamDyn frequencies
-save_fig = False
+save_fig = True
 
 # --------------------------------------------------------------------------
 
@@ -83,9 +83,10 @@ for i, (fastname, h2name) in enumerate(model_keys):
                     alpha=alpha, mec=darks[1], ecolor=darks[1], mfc=lights[1],
                     label=h2_labels[i])
         ax.set_title(label, fontsize=10)
-    axs[-1, -1].set_visible(False)
     plt.tight_layout()
-    axs[-1, 1].legend(bbox_to_anchor=(1.23, 1), loc='upper left', borderaxespad=0)
+    # axs[-1, -1].set_visible(False)
+    # axs[-1, 1].legend(bbox_to_anchor=(1.23, 1), loc='upper left', borderaxespad=0)
+    axs[0, 1].legend(loc=4)
     # save figure
     if save_fig:
         figname = os.path.basename(__file__).replace('.py', f'_{fastname}.png')

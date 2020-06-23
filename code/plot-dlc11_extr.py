@@ -11,8 +11,8 @@ from _utils import read_dlc11
 
 
 plot_keys = ['BldPitch1', 'GenSpeed', 'GenPwr', 
-             'RootMyb1', 'RootMxb1', 'TipDxb1',
-             'TwrBsMyt', 'TwrBsMxt',
+             'RtAeroFxh', 'RootMyb1', 'TipDxb1',
+             'TwrBsMyt', 'TwrBsMxt', 'YawBrMyp',
              ]  # fast_keys to plot
 alpha = 0.6
 darks = cm.get_cmap('tab20')(range(0, 20, 2))
@@ -54,12 +54,15 @@ for i, (fastname, h2name) in enumerate(model_keys):
             fast_key = 'B1TipTDxr'
         elif 'RtAeroFxh' in fast_key:
             h2scl = 1e-3
-        h2stat = 'max'
+        fst_stat, h2stat = 'max', 'max'
         if h2scl < 0:
             h2stat = 'min'
+        if fast_key == 'YawBrMyp':
+            h2stat = 'min'
+            fst_stat = 'min'
         # isolate data
         fast_wsps = np.array(fast_df.loc['mean', 'Wind1VelX'])
-        fast_maxs = np.array(fast_df.loc['max', fast_key])
+        fast_maxs = np.array(fast_df.loc[fst_stat, fast_key])
         h2_wsps = h2_df.loc[h2_df.channel_nr == i_uhub, 'mean'].values
         h2_maxs = h2_df.loc[h2_df.channel_nr == h2_chan, h2stat].values
         # scale and offset
@@ -74,15 +77,16 @@ for i, (fastname, h2name) in enumerate(model_keys):
             h2_maxs = h2_maxs[h2_wsps < bd_maxwsp]
             h2_wsps = h2_wsps[h2_wsps < bd_maxwsp]
         ax.plot(fast_wsps, fast_maxs, 'o',
-                mfc=lights[0], mec=darks[0], zorder=1, alpha=alpha,
+                mfc=lights[0], mec=darks[0], zorder=10, alpha=alpha,
                 label=fast_labels[i])
         ax.plot(h2_wsps, h2_maxs, 'o',
-                mfc=lights[1], mec=darks[1], zorder=1, alpha=alpha,
+                mfc=lights[1], mec=darks[1], zorder=10, alpha=alpha,
                 label=h2_labels[i])
         ax.set_title(label, fontsize=10)
-    axs[-1, -1].set_visible(False)
     plt.tight_layout()
-    axs[-1, 1].legend(bbox_to_anchor=(1.23, 1), loc='upper left', borderaxespad=0)
+    # axs[-1, -1].set_visible(False)
+    # axs[-1, 1].legend(bbox_to_anchor=(1.23, 1), loc='upper left', borderaxespad=0)
+    axs[0, 1].legend(loc=4)
     # save figure
     if save_fig:
         figname = os.path.basename(__file__).replace('.py', f'_{fastname}.png')

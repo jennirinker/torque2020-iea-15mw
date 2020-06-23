@@ -15,12 +15,14 @@ all_keys = [['GenSpeed', 'BldPitch1',  'GenPwr',
              'GenTq', 'RtAeroCp', 'RtAeroCt',
              ],
              ['TwrBsMyt', 'TwrBsMxt', 'YawBrMyp',
-              'RootMyb1', 'RootMxb1', 'TipDxb1',
+              'RootMyb1', 'YawBrMxp', 'TipDxb1',
+              #'RootMyb1', 'RootMxb1', 'TipDxb1',
               ]]  # fast keys to plot
 alpha = 0.8
 maxwsp = 26  # cutoff for BeamDyn frequencies
 A = np.pi * 120**2
 save_fig = False
+plot_gentq = False  # plot generator torque on tb ss plot?
 
 # --------------------------------------------------------------------------------------
 
@@ -88,6 +90,9 @@ for m in range(2):  # two plots
                 h2_data = h2_data[h2_wsp < maxwsp]
                 h2_stds = h2_stds[h2_wsp < maxwsp]
                 h2_wsp = h2_wsp[h2_wsp < maxwsp]
+            # if 'TwrBsMxt' in fast_key:
+            #     print('DELETE HACK!!!!')
+            #     fast_data *= (144.695)/150
             # plot data
             c1, c2 = None, None
             if i > 0:
@@ -96,8 +101,6 @@ for m in range(2):  # two plots
                           linestyle=['-', '--'][i], c=c1, alpha=alpha)
             l2, = ax.plot(h2_wsp, h2_data, label=h2_labels[i],
                           linestyle=['-', '--'][i], c=c2, alpha=alpha)
-            # ax.plot(fast_wsp, fast_data+fast_stds, ':', c=l1.get_color(), alpha=alpha)
-            # ax.plot(h2_wsp, h2_data+h2_stds, ':', c=l2.get_color(), alpha=alpha)
             ax.grid('on')
             if i == 0:
                 ax.set_title(label, fontsize=10)
@@ -106,11 +109,17 @@ for m in range(2):  # two plots
             ax.set_xlim([3, maxwsp])
     # prettify
     plt.tight_layout()
-    if m == 0:
+    if m == 0:  # plot cp
         cpline = axs[1, 1].plot([3, 25],[0.489, 0.489], ':', c='0.6', lw=2, zorder=0)
         axs[1, 1].legend([cpline[0]], ['Design Cp'], fontsize=10, loc=3)
         axs[0, -1].legend(fontsize=10, loc=4)
     else:
+        # plot generator torque on tower base ss
+        if plot_gentq:
+            fast_wsp = np.array(fast_df.loc['mean', 'Wind1VelX'])
+            fast_data = np.array(fast_df.loc['mean', 'GenTq']) * 1e-3
+            axs[0, 1].plot(fast_wsp, fast_data, ':', c='0.6', lw=2, zorder=0, label='GenTq')
+        # add legend
         axs[0, 1].legend(fontsize=10, loc=4)
         # axs[-1, -1].set_visible(False)
         # axs[-1, 1].legend(fontsize=10,

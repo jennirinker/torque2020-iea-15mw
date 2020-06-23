@@ -20,20 +20,20 @@ plot_keys = [('BldPitch1', i_pit, 1), ('GenSpeed', i_gspd, 1), ('GenPwr', i_pow,
 # =================================================
 # scatterplot mean and standard deviation of hh wsp
 
-fast_path = dlc11_dir + 'IEA15MW_torque_DLC11_ED_stats.yaml'
-h2_path = dlc11_dir + 'NoFPM_notorsion_DLC11_statistics.h5'
+# fast_path = dlc11_dir + 'IEA15MW_torque_DLC11_ED_stats.yaml'
+# h2_path = dlc11_dir + 'NoFPM_notorsion_DLC11_statistics.h5'
 
-fast_df = read_dlc11(fast_path)
-h2_df = read_dlc11(h2_path)
+# fast_df = read_dlc11(fast_path)
+# h2_df = read_dlc11(h2_path)
 
-fig, axs = plt.subplots(1, 2, figsize=(8, 3), clear=True, num=10)
-for i, stat in enumerate(['mean', 'std']):
-    fast_wsps = fast_df.loc[stat, 'Wind1VelX']
-    h2_wsps = h2_df.loc[h2_df.channel_nr == i_uhub, stat].values
-    axs[i].scatter(sorted(fast_wsps), sorted(h2_wsps))
-    axs[i].set_title(stat)
-    axs[i].set_xlabel('Fast hh wsp')
-    axs[i].set_ylabel('HAWC2 hh wsp')
+# fig, axs = plt.subplots(1, 2, figsize=(8, 3), clear=True, num=10)
+# for i, stat in enumerate(['mean', 'std']):
+#     fast_wsps = fast_df.loc[stat, 'Wind1VelX']
+#     h2_wsps = h2_df.loc[h2_df.channel_nr == i_uhub, stat].values
+#     axs[i].scatter(sorted(fast_wsps), sorted(h2_wsps))
+#     axs[i].set_title(stat)
+#     axs[i].set_xlabel('Fast hh wsp')
+#     axs[i].set_ylabel('HAWC2 hh wsp')
 
 # =================================================
 # time series
