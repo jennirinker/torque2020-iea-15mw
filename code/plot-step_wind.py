@@ -12,6 +12,7 @@ plot_keys = [('GenSpeed', i_gspd,'Generator Speed [rpm]', 1),
              ('GenTq', i_gtrq, 'Generator Torque [MNm]', -1e-6)]
 # ('GenPwr', i_pow, 1e-3)
 alpha = 0.9
+save_fig = False
 
 #%% load data
 print('Loading data...')
@@ -66,5 +67,6 @@ axs[1, -1].legend(loc=4)
 plt.tight_layout()
 
 # save figure
-figname = os.path.basename(__file__).replace('.py', '.png')
-fig.savefig(fig_dir + figname, dpi=150)
+if save_fig:
+    figname = os.path.basename(__file__).replace('.py', '.png')
+    fig.savefig(fig_dir + figname, dpi=150)

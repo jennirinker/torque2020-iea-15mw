@@ -12,6 +12,8 @@ ed_path = 'C:/Users/rink/git/IEA-15-240-RWT/OpenFAST/IEA-15-240-RWT/IEA-15-240-R
 h2fpm_path = 'C:/Users/rink/git/IEA-15-240-RWT/HAWC2/FPM/data/IEA_15MW_RWT_Blade_st.dat'
 h2nofpm_path = 'C:/Users/rink/git/IEA-15-240-RWT/HAWC2/NoFPM_notorsion/data/IEA_15MW_RWT_Blade_st_noFPM.dat'
 
+alpha = 0.8
+save_fig = False
 
 # load dataframes
 bd_df = read_blade_dat(bd_path, blade_len=blade_len)
@@ -23,7 +25,6 @@ pltprms = {'font.size': 11, 'axes.labelsize': 13}
 with plt.rc_context(pltprms):
     fig, axs = plt.subplots(2, 2, num=1, clear=True, figsize=(9, 4))
 
-alpha = 0.8
 
 # ========================================================
 ax = axs[0, 0]  # blade mass density
@@ -81,6 +82,6 @@ ax.set_title(label)
 # prettify and save
 axs[0, 1].legend()
 plt.tight_layout()
-
-figname = os.path.basename(__file__).replace('.py', '.png')
-fig.savefig(fig_dir + figname, dpi=150)
+if save_fig:
+    figname = os.path.basename(__file__).replace('.py', '.png')
+    fig.savefig(fig_dir + figname, dpi=150)
